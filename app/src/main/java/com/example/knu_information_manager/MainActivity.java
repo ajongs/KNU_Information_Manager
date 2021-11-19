@@ -2,7 +2,9 @@ package com.example.knu_information_manager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,14 +24,21 @@ import java.util.logging.LogRecord;
 public class MainActivity extends AppCompatActivity {
     TextView textView;
 
+    private RecyclerView recyclerView;
+    private List<String> result = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textView = (TextView) findViewById(R.id.textView1);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+
         final Bundle bundle = new Bundle();
-        List<String> result = new ArrayList<>();
+
         StringBuilder sb = new StringBuilder();
+        Parsing parsing = new Parsing();
+        parsing.execute();
+        /*
         new Thread(){
             @Override
             public void run() {
@@ -60,13 +69,52 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             }
-        }.start();
+        }.start();*/
     }
+    private class Parsing extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            //super.onPostExecute(unused);
+            textView.setText(result.toString());
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String URL ="https://www.kongju.ac.kr/kor/article/student_news/?mno=&pageIndex=1&categoryCnt=1&searchCategory=&searchCategory0=&searchCondition=1&searchKeyword=#article";
+
+            try {
+                Document doc = Jsoup.connect(URL).get();
+                Elements temele = doc.select(".subject");
+                Boolean isEmpty = temele.isEmpty();
+
+
+                if(isEmpty==false){
+                    for(Element e:temele){
+                        if(e.text().contains("예산")){
+                            result.add(e.text());
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("document 불러오기 실패");
+
+            }
+            return null;
+        }
+    }
+    /* 스레드와 핸들러 사용부분
     Handler handler = new Handler(){
         @Override
         public void handleMessage(@NonNull Message msg) {
             Bundle bundle = msg.getData();
             textView.setText(bundle.getString("article"));
         }
-    };
+    };*/
 }

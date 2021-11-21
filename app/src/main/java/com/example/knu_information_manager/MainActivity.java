@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,12 +32,15 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<ViewData> result = new ArrayList<>();
     private ParseAdapter parseAdapter;
     private int count=-1;
+    private Button kongjuBtn, computerBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //textView = (TextView) findViewById(R.id.textView1);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        kongjuBtn = (Button) findViewById(R.id.kongjuBtn);
+        computerBtn = (Button)findViewById(R.id.computerBtn);
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("KNU Info Manager");

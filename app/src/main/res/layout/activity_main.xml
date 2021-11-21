@@ -15,6 +15,41 @@
         android:theme="?attr/actionBarTheme"
         app:titleTextColor="@color/white"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="20dp"
+        android:paddingBottom="40dp">
+        <Button
+            android:id="@+id/kongjuBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_weight="1"
+            android:text="공주대학교 홈페이지"
+            android:background="#7E7FCC"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+"/>
+        <Button
+            android:id="@+id/computerBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="10dp"
+            android:text="컴퓨터공학부 홈페이지"
+            android:background="#7E7FCC"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="공지 사항"
+        android:textSize="30dp"
+        android:textStyle="bold"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"

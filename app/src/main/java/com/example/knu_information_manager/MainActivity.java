@@ -2,6 +2,7 @@ package com.example.knu_information_manager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.AsyncTask;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.jsoup.Jsoup;
@@ -25,17 +27,20 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
 
     private RecyclerView recyclerView;
-    private List<String> result = new ArrayList<>();
+    private ArrayList<ViewData> result = new ArrayList<>();
+    private ParseAdapter parseAdapter;
+    private int count=-1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView = (TextView) findViewById(R.id.textView1);
+        //textView = (TextView) findViewById(R.id.textView1);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
 
-        final Bundle bundle = new Bundle();
 
-        StringBuilder sb = new StringBuilder();
+        //final Bundle bundle = new Bundle();
+
+        //StringBuilder sb = new StringBuilder();
         Parsing parsing = new Parsing();
         parsing.execute();
         /*
@@ -81,7 +86,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void unused) {
             //super.onPostExecute(unused);
-            textView.setText(result.toString());
+            //textView.setText(result.toString());
+            parseAdapter = new ParseAdapter(result);
+
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setAdapter(parseAdapter);
+
+
+
         }
 
         @Override
@@ -96,11 +109,15 @@ public class MainActivity extends AppCompatActivity {
 
                 if(isEmpty==false){
                     for(Element e:temele){
-                        if(e.text().contains("예산")){
-                            result.add(e.text());
+                        if(e.text().contains("공통")){
+                            count++;
+                            ViewData data = new ViewData(Integer.toString(count), e.text());
+                            result.add(data);
                         }
                     }
                 }
+                //parseAdapter.notifyDataSetChanged();
+
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("document 불러오기 실패");

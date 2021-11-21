@@ -3,6 +3,7 @@ package com.example.knu_information_manager;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,8 +12,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import org.jsoup.Jsoup;
@@ -33,6 +39,19 @@ public class MainActivity extends AppCompatActivity {
     private ParseAdapter parseAdapter;
     private int count=-1;
     private Button kongjuBtn, computerBtn;
+    private DrawerLayout drawerLayout;
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{
+                drawerLayout.openDrawer(Gravity.LEFT);
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,13 +60,15 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         kongjuBtn = (Button) findViewById(R.id.kongjuBtn);
         computerBtn = (Button)findViewById(R.id.computerBtn);
-
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("KNU Info Manager");
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24);
+
+
 
         //final Bundle bundle = new Bundle();
 

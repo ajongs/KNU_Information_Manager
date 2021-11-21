@@ -2,6 +2,7 @@ package com.example.knu_information_manager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,6 +38,12 @@ public class MainActivity extends AppCompatActivity {
         //textView = (TextView) findViewById(R.id.textView1);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
 
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar.setTitle("KNU Info Manager");
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24);
 
         //final Bundle bundle = new Bundle();
 

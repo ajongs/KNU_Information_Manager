@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity{
     private Button kongjuBtn, computerBtn;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
@@ -91,21 +92,17 @@ public class MainActivity extends AppCompatActivity{
                 Intent intent;
                 switch (item.getItemId()){
                     case R.id.home:
-                        /*
                         intent = getIntent();
                         finish();
-                        startActivity(intent);*/
-                        Toast.makeText(getApplicationContext(), "아이템1 선택", Toast.LENGTH_SHORT).show();
+                        startActivity(intent);
                         break;
                     case R.id.Keyword:
-                        Log.d("_____MAIN_____", "키워드 메뉴 클릭");
-                        System.out.println("키뭐드 메뉴 클릭");
                         intent = new Intent(MainActivity.this, KeyWordActivity.class);
                         startActivity(intent);
                         break;
                 }
-                //drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return false;
             }
         });
 

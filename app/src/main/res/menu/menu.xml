@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/menuLayout">
-        <item
-            android:id="@+id/home"
-            android:title="홈"/>
-        <item
-            android:id="@+id/Keyword"
-            android:title="키워드 설정"/>
+    android:id="@+id/menuLayout"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showln="navigation_view">
+
+        <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/home"
+                    android:title="홈"
+                    android:icon="@drawable/ic_baseline_home_24"/>
+                <item
+                    android:id="@+id/Keyword"
+                    android:title="키워드 설정"
+                    android:icon="@drawable/ic_baseline_settings_24"/>
+
+        </group>
+
 </menu>

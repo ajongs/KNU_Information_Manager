@@ -3,10 +3,12 @@ package com.example.knu_information_manager;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,10 +18,14 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.navigation.NavigationView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -31,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.LogRecord;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     TextView textView;
 
     private RecyclerView recyclerView;
@@ -40,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private int count=-1;
     private Button kongjuBtn, computerBtn;
     private DrawerLayout drawerLayout;
-
+    private NavigationView navigationView;
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
@@ -68,7 +74,40 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24);
 
+        //네이게이션 화면 설정
+        navigationView = (NavigationView) findViewById(R.id.navigationView);
 
+        kongjuBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, KeyWordActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent intent;
+                switch (item.getItemId()){
+                    case R.id.home:
+                        /*
+                        intent = getIntent();
+                        finish();
+                        startActivity(intent);*/
+                        Toast.makeText(getApplicationContext(), "아이템1 선택", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.Keyword:
+                        Log.d("_____MAIN_____", "키워드 메뉴 클릭");
+                        System.out.println("키뭐드 메뉴 클릭");
+                        intent = new Intent(MainActivity.this, KeyWordActivity.class);
+                        startActivity(intent);
+                        break;
+                }
+                //drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
 
         //final Bundle bundle = new Bundle();
 
@@ -108,6 +147,25 @@ public class MainActivity extends AppCompatActivity {
             }
         }.start();*/
     }
+    /*
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == R.id.home){
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
+        }
+        else if(id == R.id.Keyword){
+            Intent intent = new Intent(MainActivity.this, KeyWordActivity.class);
+            startActivity(intent);
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }*/
+
     private class Parsing extends AsyncTask<Void, Void, Void>{
 
         @Override
@@ -124,9 +182,6 @@ public class MainActivity extends AppCompatActivity {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
             recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setAdapter(parseAdapter);
-
-
-
         }
 
         @Override
@@ -147,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
                             result.add(data);
                         }
                     }
+                    System.out.println("document 불러오기 성공");
                 }
                 //parseAdapter.notifyDataSetChanged();
 

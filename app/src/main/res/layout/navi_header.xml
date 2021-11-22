@@ -13,6 +13,6 @@
         android:layout_marginTop="20dp"
         android:layout_height="169dp"
         android:layout_gravity="center_vertical"
-        app:srcCompat="@drawable/kongju_bigmark" />
+        app:srcCompat="@drawable/kongju_big_mark" />
 
 </LinearLayout>

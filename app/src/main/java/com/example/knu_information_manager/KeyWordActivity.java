@@ -64,8 +64,8 @@ public class KeyWordActivity extends AppCompatActivity {
 
         //어댑터 호출
         list = new ArrayList<>();
-        list.add("샹 개힘드네");
-        list.add("ㄴㅇ랴ㅐㅈ덜ㄴㅇ");
+        list.add("컴퓨터공학부");
+        list.add("어학연수");
         KeyListAdapter keyListAdapter = new KeyListAdapter(list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);

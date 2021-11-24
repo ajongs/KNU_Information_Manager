@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity{
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
+    final static String CSE_URL = "https://cse.kongju.ac.kr/ZD1110/11560/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGWkQxMTEwJTJGMTQwNSUyRmFydGNsTGlzdC5kbyUzRnBhZ2UlM0QxJTI2c3JjaENvbHVtbiUzRCUyNnNyY2hXcmQlM0QlMjZiYnNDbFNlcSUzRCUyNmJic09wZW5XcmRTZXElM0QlMjZyZ3NCZ25kZVN0ciUzRCUyNnJnc0VuZGRlU3RyJTNEJTI2aXNWaWV3TWluZSUzRGZhbHNlJTI2";
+    final static String KONGJU_URL = "https://www.kongju.ac.kr/kor/article/student_news/?mno=&pageIndex=1&categoryCnt=1&searchCategory=&searchCategory0=&searchCondition=1&searchKeyword=#article";
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
@@ -81,8 +83,23 @@ public class MainActivity extends AppCompatActivity{
         kongjuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 Intent intent = new Intent(MainActivity.this, KeyWordActivity.class);
-                startActivity(intent);
+                startActivity(intent);*/
+                result.clear();
+                Parsing parsing = new Parsing(KONGJU_URL);
+                parsing.execute();
+            }
+        });
+        computerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /* TODO parsing 클래스 하나 더만들어야함
+                result.clear();
+                Parsing parsing = new Parsing(CSE_URL);
+                parsing.execute();
+
+                 */
             }
         });
 
@@ -109,7 +126,7 @@ public class MainActivity extends AppCompatActivity{
         //final Bundle bundle = new Bundle();
 
         //StringBuilder sb = new StringBuilder();
-        Parsing parsing = new Parsing();
+        Parsing parsing = new Parsing(KONGJU_URL);
         parsing.execute();
         /*
         new Thread(){
@@ -164,6 +181,11 @@ public class MainActivity extends AppCompatActivity{
     }*/
 
     private class Parsing extends AsyncTask<Void, Void, Void>{
+        String URL;
+
+        public Parsing(String URL) {
+            this.URL = URL;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -183,7 +205,7 @@ public class MainActivity extends AppCompatActivity{
 
         @Override
         protected Void doInBackground(Void... voids) {
-            String URL ="https://www.kongju.ac.kr/kor/article/student_news/?mno=&pageIndex=1&categoryCnt=1&searchCategory=&searchCategory0=&searchCondition=1&searchKeyword=#article";
+            //String URL ="https://www.kongju.ac.kr/kor/article/student_news/?mno=&pageIndex=1&categoryCnt=1&searchCategory=&searchCategory0=&searchCondition=1&searchKeyword=#article";
 
             try {
                 Document doc = Jsoup.connect(URL).get();
@@ -193,7 +215,7 @@ public class MainActivity extends AppCompatActivity{
 
                 if(isEmpty==false){
                     for(Element e:temele){
-                        if(e.text().contains("공통")){
+                        if(e.text().contains("2021")){
                             count++;
                             ViewData data = new ViewData(Integer.toString(count), e.text());
                             result.add(data);

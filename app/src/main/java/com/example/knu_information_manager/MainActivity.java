@@ -11,19 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -34,8 +26,6 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.LogRecord;
 
 public class MainActivity extends AppCompatActivity{
     TextView textView;
@@ -86,20 +76,18 @@ public class MainActivity extends AppCompatActivity{
                 /*
                 Intent intent = new Intent(MainActivity.this, KeyWordActivity.class);
                 startActivity(intent);*/
-                result.clear();
-                Parsing parsing = new Parsing(KONGJU_URL);
+
+                Parsing parsing = new Parsing(KONGJU_URL, true);
                 parsing.execute();
             }
         });
         computerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /* TODO parsing 클래스 하나 더만들어야함
-                result.clear();
-                Parsing parsing = new Parsing(CSE_URL);
+                Parsing parsing = new Parsing(CSE_URL, false);
                 parsing.execute();
 
-                 */
+
             }
         });
 
@@ -126,7 +114,8 @@ public class MainActivity extends AppCompatActivity{
         //final Bundle bundle = new Bundle();
 
         //StringBuilder sb = new StringBuilder();
-        Parsing parsing = new Parsing(KONGJU_URL);
+        Parsing parsing = new Parsing(KONGJU_URL,true );
+        //Parsing parsing = new Parsing(CSE_URL, false);
         parsing.execute();
         /*
         new Thread(){
@@ -182,14 +171,24 @@ public class MainActivity extends AppCompatActivity{
 
     private class Parsing extends AsyncTask<Void, Void, Void>{
         String URL;
+        String query;
 
-        public Parsing(String URL) {
+        public Parsing(String URL, Boolean flag) {
             this.URL = URL;
+            if(flag==true){
+                query = ".subject";
+            }
+            else{
+                query = ".td-subject a";
+            }
+
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            count=0;
+            result.clear();
         }
 
         @Override
@@ -205,11 +204,10 @@ public class MainActivity extends AppCompatActivity{
 
         @Override
         protected Void doInBackground(Void... voids) {
-            //String URL ="https://www.kongju.ac.kr/kor/article/student_news/?mno=&pageIndex=1&categoryCnt=1&searchCategory=&searchCategory0=&searchCondition=1&searchKeyword=#article";
 
             try {
                 Document doc = Jsoup.connect(URL).get();
-                Elements temele = doc.select(".subject");
+                Elements temele = doc.select(query);
                 Boolean isEmpty = temele.isEmpty();
 
 

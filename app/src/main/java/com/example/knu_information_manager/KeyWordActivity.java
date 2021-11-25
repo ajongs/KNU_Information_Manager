@@ -1,7 +1,11 @@
 package com.example.knu_information_manager;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -9,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +28,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class KeyWordActivity extends AppCompatActivity {
@@ -30,10 +38,21 @@ public class KeyWordActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private RecyclerView recyclerView;
     private ArrayList<String> list;
+    private Button registerBtn, deleteBtn;
+    private EditText inputText;
+    private SQLiteDatabase sqlDB;
+    private myDBHelper dbHelper;
+    private TextView keywordView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.keyword);
+        registerBtn = (Button) findViewById(R.id.registerBtn);
+
+        deleteBtn = (Button) findViewById(R.id.deleteBtn_list);
+        keywordView = (TextView) findViewById(R.id.keyword_list);
+
+        inputText = (EditText)findViewById(R.id.inputText);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -64,12 +83,49 @@ public class KeyWordActivity extends AppCompatActivity {
 
         //어댑터 호출
         list = new ArrayList<>();
-        list.add("컴퓨터공학부");
-        list.add("어학연수");
+        dbHelper = new myDBHelper(this);
+        viewKeywords();
         KeyListAdapter keyListAdapter = new KeyListAdapter(list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(keyListAdapter);
+
+
+        registerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String keyword = inputText.getText().toString();
+                sqlDB = dbHelper.getWritableDatabase();
+                sqlDB.execSQL("INSERT INTO KeywordTBL VALUES ('"+keyword+"')");
+                //Toast.makeText(getApplicationContext(), keyword+" 가 추가되었습니다.", Toast.LENGTH_SHORT).show();
+
+                Cursor cursor = sqlDB.rawQuery("SELECT * FROM KeywordTBL;", null);
+                while(cursor.moveToNext()){
+                    list.add(cursor.getString(0));
+                    Toast.makeText(getApplicationContext(), list.get(0), Toast.LENGTH_SHORT).show();
+                }
+                keyListAdapter.notifyDataSetChanged();
+                cursor.close();
+                sqlDB.close();
+            }
+        });
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
+    }
+    public void viewKeywords(){
+
+        sqlDB = dbHelper.getReadableDatabase();
+
+        Cursor cursor = sqlDB.rawQuery("SELECT * FROM KeywordTBL;", null);
+        while(cursor.moveToNext()){
+            list.add(cursor.getString(0));
+        }
+        cursor.close();
+        sqlDB.close();
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -82,4 +138,20 @@ public class KeyWordActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public class myDBHelper extends SQLiteOpenHelper{
+
+        public myDBHelper(@Nullable Context context) {
+            super(context, "KeyWordDB", null, 1);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            db.execSQL("CREATE TABLE KeywordTBL(keywords CHAR(50));");
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            //
+        }
+    }
 }

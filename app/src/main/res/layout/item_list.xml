@@ -6,6 +6,9 @@
     android:layout_height="wrap_content"
     tools:context=".MainActivity"
     android:orientation="horizontal"
+    android:background="@color/text"
+    android:layout_marginBottom="3dp"
+    android:layout_marginHorizontal="1dp"
     >
 
     <LinearLayout

@@ -90,7 +90,7 @@ public class KeyWordActivity extends AppCompatActivity {
         keyListAdapter.setOnItemClickListener(new KeyListAdapter.OnItemClickEventListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(getApplicationContext(), list.get(position),Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), list.get(position),Toast.LENGTH_SHORT).show();
                 String keyword = list.get(position);
                 sqlDB = dbHelper.getWritableDatabase();
                 sqlDB.execSQL("DELETE FROM KeywordTBL WHERE keywords = '"+keyword+"';");
@@ -110,12 +110,11 @@ public class KeyWordActivity extends AppCompatActivity {
                 String keyword = inputText.getText().toString();
                 sqlDB = dbHelper.getWritableDatabase();
                 sqlDB.execSQL("INSERT INTO KeywordTBL VALUES ('"+keyword+"')");
-                //Toast.makeText(getApplicationContext(), keyword+" 가 추가되었습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "'"+keyword+"'가 추가되었습니다.", Toast.LENGTH_SHORT).show();
 
                 Cursor cursor = sqlDB.rawQuery("SELECT * FROM KeywordTBL;", null);
                 while(cursor.moveToNext()){
                     list.add(cursor.getString(0));
-                    Toast.makeText(getApplicationContext(), list.get(0), Toast.LENGTH_SHORT).show();
                 }
                 keyListAdapter.notifyDataSetChanged();
                 cursor.close();

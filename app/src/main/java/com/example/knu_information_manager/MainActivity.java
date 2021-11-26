@@ -227,7 +227,12 @@ public class MainActivity extends AppCompatActivity{
             list.clear();
             progressDialog = new ProgressDialog(MainActivity.this, android.R.style.Theme_Material_Dialog_Alert);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.setMessage("Loading...");
+            if(flag){
+                progressDialog.setMessage("공주대학교 공지사항 불러오는 중...");
+            }
+            else{
+                progressDialog.setMessage("컴퓨터공학부 공지사항 불러오는 중...");
+            }
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
         }

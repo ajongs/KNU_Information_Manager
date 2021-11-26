@@ -1,5 +1,6 @@
 package com.example.knu_information_manager;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,19 +15,26 @@ import java.util.ArrayList;
 
 public class KeyListAdapter extends RecyclerView.Adapter<KeyListAdapter.ViewHolder> {
     private ArrayList<String> list;
+    private Button deleteBtn;
+
+    public interface OnItemClickEventListener{
+        public void onItemClick(View view, int position);
+    }
+
+    private OnItemClickEventListener onItemClickEventListener;
+
 
     public KeyListAdapter(ArrayList<String> list) {
         this.list = list;
     }
-
     public class ViewHolder extends RecyclerView.ViewHolder{
         protected TextView keyword;
-        protected Button delete;
+        protected Button deleteBtn;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.keyword = (TextView) itemView.findViewById(R.id.keyword_list);
-            this.delete = (Button) itemView.findViewById(R.id.deleteBtn_list);
+            this.deleteBtn = (Button) itemView.findViewById(R.id.deleteBtn_list);
         }
 
     }
@@ -40,8 +48,15 @@ public class KeyListAdapter extends RecyclerView.Adapter<KeyListAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.keyword.setText(list.get(position));
+
+        holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickEventListener.onItemClick(v, position);
+            }
+        });
     }
 
     @Override
@@ -49,5 +64,8 @@ public class KeyListAdapter extends RecyclerView.Adapter<KeyListAdapter.ViewHold
         return (null!=list?list.size():0);
     }
 
+    public void setOnItemClickListener(OnItemClickEventListener a_listener) {
+        onItemClickEventListener = a_listener;
+    }
 
 }

@@ -86,6 +86,18 @@ public class KeyWordActivity extends AppCompatActivity {
         dbHelper = new myDBHelper(this);
         viewKeywords();
         KeyListAdapter keyListAdapter = new KeyListAdapter(list);
+        //리사이클러 뷰 삭제 버튼 이벤트
+        keyListAdapter.setOnItemClickListener(new KeyListAdapter.OnItemClickEventListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Toast.makeText(getApplicationContext(), list.get(position),Toast.LENGTH_SHORT).show();
+                String keyword = list.get(position);
+                sqlDB = dbHelper.getWritableDatabase();
+                sqlDB.execSQL("DELETE FROM KeywordTBL WHERE keywords = '"+keyword+"';");
+                list.remove(position);
+                keyListAdapter.notifyDataSetChanged();
+            }
+        });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(keyListAdapter);
@@ -94,6 +106,7 @@ public class KeyWordActivity extends AppCompatActivity {
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                list.clear();
                 String keyword = inputText.getText().toString();
                 sqlDB = dbHelper.getWritableDatabase();
                 sqlDB.execSQL("INSERT INTO KeywordTBL VALUES ('"+keyword+"')");
@@ -109,12 +122,7 @@ public class KeyWordActivity extends AppCompatActivity {
                 sqlDB.close();
             }
         });
-        deleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                
-            }
-        });
+
     }
     public void viewKeywords(){
 

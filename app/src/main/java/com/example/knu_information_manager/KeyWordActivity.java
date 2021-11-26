@@ -146,7 +146,7 @@ public class KeyWordActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public class myDBHelper extends SQLiteOpenHelper{
+    public static class myDBHelper extends SQLiteOpenHelper{
 
         public myDBHelper(@Nullable Context context) {
             super(context, "KeyWordDB", null, 1);

@@ -24,7 +24,7 @@
             android:text="키워드 추가하기"
             android:textSize="25dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="30dp"
             android:textStyle="bold"/>
         <LinearLayout
             android:layout_width="match_parent"

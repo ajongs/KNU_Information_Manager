@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity{
 
         str.append("로 검색된 결과입니다.");
         keywordTV.setText(str);
-        
+
         kongjuBtn.callOnClick();
     }
 
@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity{
                     }
                     else{
 
-                        String str = "https://cse.kongju.ac.kr/"+cse_link.get(position);
+                        String str = "https://cse.kongju.ac.kr"+cse_link.get(position);
                         Intent linkIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(str));
                         startActivity(linkIntent);
                     }

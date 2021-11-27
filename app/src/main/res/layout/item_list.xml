@@ -8,7 +8,7 @@
     android:orientation="horizontal"
     android:background="@color/text"
     android:layout_marginBottom="3dp"
-    android:layout_marginHorizontal="1dp"
+    android:layout_marginHorizontal="5dp"
     >
 
     <LinearLayout
@@ -24,6 +24,7 @@
             android:textAlignment="center"
             android:layout_marginLeft="10dp"
             android:text="12"
+            android:textColor="@color/violet"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_chainStyle="spread"

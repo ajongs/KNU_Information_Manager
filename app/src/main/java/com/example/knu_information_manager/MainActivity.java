@@ -31,6 +31,7 @@ import org.jsoup.helper.HttpConnection;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -49,11 +50,11 @@ public class MainActivity extends AppCompatActivity{
     private KeyWordActivity.myDBHelper dbHelper;
     private SQLiteDatabase sqlDB;
     private ArrayList<String> list;
-    //final static String CSE_URL = "https://cse.kongju.ac.kr/ZD1110/11560/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGWkQxMTEwJTJGMTQwNSUyRmFydGNsTGlzdC5kbyUzRnBhZ2UlM0QxJTI2c3JjaENvbHVtbiUzRCUyNnNyY2hXcmQlM0QlMjZiYnNDbFNlcSUzRCUyNmJic09wZW5XcmRTZXElM0QlMjZyZ3NCZ25kZVN0ciUzRCUyNnJnc0VuZGRlU3RyJTNEJTI2aXNWaWV3TWluZSUzRGZhbHNlJTI2";
+    private TextView keywordTV;
     final static String CSE_URL = "https://cse.kongju.ac.kr/bbs/ZD1110/1405/artclList.do";
     final static String KONGJU_URL = "https://www.kongju.ac.kr/kor/article/student_news/?mno=&pageIndex=";
 
-    private ArrayList<String> onClick;
+    private ArrayList<String> knu_link;
     private ArrayList<String> cse_link;
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -69,6 +70,19 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
+        StringBuilder str = new StringBuilder("키워드 ");
+        sqlDB = dbHelper.getReadableDatabase();
+
+        Cursor cursor = sqlDB.rawQuery("SELECT * FROM KeywordTBL;", null);
+        while(cursor.moveToNext()){
+            str.append("#"+cursor.getString(0)+" ");
+        }
+        cursor.close();
+        sqlDB.close();
+
+        str.append("로 검색된 결과입니다.");
+        keywordTV.setText(str);
+        
         kongjuBtn.callOnClick();
     }
 
@@ -76,17 +90,17 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //textView = (TextView) findViewById(R.id.textView1);
         list = new ArrayList<>();
-        onClick = new ArrayList<>();
+        knu_link = new ArrayList<>();
         cse_link = new ArrayList<>();
+        keywordTV = (TextView) findViewById(R.id.textView_keyword);
         dbHelper = new KeyWordActivity.myDBHelper(this);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         kongjuBtn = (Button) findViewById(R.id.kongjuBtn);
         computerBtn = (Button)findViewById(R.id.computerBtn);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
-        toolbar.setTitle("KNU Info Manager");
+        toolbar.setTitle("공주대학교 정보 알림이");
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -98,9 +112,6 @@ public class MainActivity extends AppCompatActivity{
         kongjuBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                Intent intent = new Intent(MainActivity.this, KeyWordActivity.class);
-                startActivity(intent);*/
                 computerBtn.setBackgroundColor(getResources().getColor(R.color.violet));
                 computerBtn.setTextColor(Color.WHITE);
                 kongjuBtn.setBackgroundColor(Color.WHITE);
@@ -146,64 +157,7 @@ public class MainActivity extends AppCompatActivity{
                 return false;
             }
         });
-
-        //final Bundle bundle = new Bundle();
-
-        //StringBuilder sb = new StringBuilder();
-        //Parsing parsing = new Parsing(KONGJU_URL,true );
-        //Parsing parsing = new Parsing(CSE_URL, false);
-        //parsing.execute();
-        /*
-        new Thread(){
-            @Override
-            public void run() {
-                String URL ="https://www.kongju.ac.kr/kor/article/student_news/?mno=&pageIndex=1&categoryCnt=1&searchCategory=&searchCategory0=&searchCondition=1&searchKeyword=#article";
-
-                try {
-                    Document doc = Jsoup.connect(URL).get();
-                    Elements temele = doc.select(".subject");
-                    Boolean isEmpty = temele.isEmpty();
-
-
-                    if(isEmpty==false){
-                        for(Element e:temele){
-                            if(e.text().contains("예산")){
-                                result.add(e.text());
-                                sb.append(e.text());
-                            }
-                        }
-                        bundle.putString("article", sb.toString());
-                        System.out.println(sb.toString());
-                        Message msg = handler.obtainMessage();
-                        msg.setData(bundle);
-                        handler.sendMessage(msg);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.out.println("document 불러오기 실패");
-
-                }
-            }
-        }.start();*/
     }
-    /*
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if(id == R.id.home){
-            Intent intent = getIntent();
-            finish();
-            startActivity(intent);
-        }
-        else if(id == R.id.Keyword){
-            Intent intent = new Intent(MainActivity.this, KeyWordActivity.class);
-            startActivity(intent);
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawerLayout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }*/
 
     private class Parsing extends AsyncTask<Void, Void, Void>{
         String URL;
@@ -231,6 +185,8 @@ public class MainActivity extends AppCompatActivity{
             count=0;
             result.clear();
             list.clear();
+            knu_link.clear();
+            cse_link.clear();
             progressDialog = new ProgressDialog(MainActivity.this, android.R.style.Theme_Material_Dialog_Alert);
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             if(flag){
@@ -245,8 +201,7 @@ public class MainActivity extends AppCompatActivity{
 
         @Override
         protected void onPostExecute(Void unused) {
-            //super.onPostExecute(unused);
-            //textView.setText(result.toString());
+            super.onPostExecute(unused);
             progressDialog.dismiss();
             parseAdapter = new ParseAdapter(result);
             parseAdapter.setOnItemClickListener(new ParseAdapter.OnItemClickEventListener() {
@@ -254,14 +209,12 @@ public class MainActivity extends AppCompatActivity{
                 public void onItemClick(View view, int position) {
                     //새로운 창 열기
                     if(flag){
-                        String str = "https://www.kongju.ac.kr/kor/article/student_news/"+onClick.get(position);
+                        String str = "https://www.kongju.ac.kr/kor/article/student_news/"+knu_link.get(position);
                         Intent linkIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(str));
                         startActivity(linkIntent);
                     }
                     else{
-                        /*
-                        String str = "javascript:"+
-                                "var to = 'https://cse.kongju.ac.kr/bbs/ZD1110/1405/208314/"+ +"/artclView.do'";*/
+
                         String str = "https://cse.kongju.ac.kr/"+cse_link.get(position);
                         Intent linkIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(str));
                         startActivity(linkIntent);
@@ -279,6 +232,7 @@ public class MainActivity extends AppCompatActivity{
         protected Void doInBackground(Void... voids) {
 
             try {
+
                 sqlDB = dbHelper.getReadableDatabase();
 
                 Cursor cursor = sqlDB.rawQuery("SELECT * FROM KeywordTBL;", null);
@@ -306,12 +260,8 @@ public class MainActivity extends AppCompatActivity{
                                 if(e.text().contains(keyword)){
                                     count++;
                                     ViewData data = new ViewData(Integer.toString(count), e.text());
-                                    /*
                                     if(flag){
-                                        Toast.makeText(getApplicationContext(), e.attr("onClick"),Toast.LENGTH_SHORT).show();
-                                    }*/
-                                    if(flag){
-                                        onClick.add(e.attr("onclick").replaceAll("[^\\d]", ""));
+                                        knu_link.add(e.attr("onclick").replaceAll("[^\\d]", ""));
                                     }
                                     else{
                                         cse_link.add(e.attr("href"));
@@ -332,12 +282,4 @@ public class MainActivity extends AppCompatActivity{
             return null;
         }
     }
-    /* 스레드와 핸들러 사용부분
-    Handler handler = new Handler(){
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            Bundle bundle = msg.getData();
-            textView.setText(bundle.getString("article"));
-        }
-    };*/
 }

@@ -56,7 +56,7 @@ public class KeyWordActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("KNU Info Manager");
+        toolbar.setTitle("공주대학교 정보 알림이");
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

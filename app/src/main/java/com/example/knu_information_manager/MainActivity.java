@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -21,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -51,6 +53,8 @@ public class MainActivity extends AppCompatActivity{
     final static String CSE_URL = "https://cse.kongju.ac.kr/bbs/ZD1110/1405/artclList.do";
     final static String KONGJU_URL = "https://www.kongju.ac.kr/kor/article/student_news/?mno=&pageIndex=";
 
+    private ArrayList<String> onClick;
+    private ArrayList<String> cse_link;
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
@@ -74,6 +78,8 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
         //textView = (TextView) findViewById(R.id.textView1);
         list = new ArrayList<>();
+        onClick = new ArrayList<>();
+        cse_link = new ArrayList<>();
         dbHelper = new KeyWordActivity.myDBHelper(this);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         kongjuBtn = (Button) findViewById(R.id.kongjuBtn);
@@ -210,7 +216,7 @@ public class MainActivity extends AppCompatActivity{
             //true 공주대사이트
             this.flag = flag;
             if(flag==true){
-                query = ".subject";
+                query = ".subject a";
             }
             //false 컴공사이트
             else{
@@ -243,11 +249,30 @@ public class MainActivity extends AppCompatActivity{
             //textView.setText(result.toString());
             progressDialog.dismiss();
             parseAdapter = new ParseAdapter(result);
-
+            parseAdapter.setOnItemClickListener(new ParseAdapter.OnItemClickEventListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    //새로운 창 열기
+                    if(flag){
+                        String str = "https://www.kongju.ac.kr/kor/article/student_news/"+onClick.get(position);
+                        Intent linkIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(str));
+                        startActivity(linkIntent);
+                    }
+                    else{
+                        /*
+                        String str = "javascript:"+
+                                "var to = 'https://cse.kongju.ac.kr/bbs/ZD1110/1405/208314/"+ +"/artclView.do'";*/
+                        String str = "https://cse.kongju.ac.kr/"+cse_link.get(position);
+                        Intent linkIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(str));
+                        startActivity(linkIntent);
+                    }
+                }
+            });
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
             recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setAdapter(parseAdapter);
             parseAdapter.notifyDataSetChanged();
+
         }
 
         @Override
@@ -281,6 +306,16 @@ public class MainActivity extends AppCompatActivity{
                                 if(e.text().contains(keyword)){
                                     count++;
                                     ViewData data = new ViewData(Integer.toString(count), e.text());
+                                    /*
+                                    if(flag){
+                                        Toast.makeText(getApplicationContext(), e.attr("onClick"),Toast.LENGTH_SHORT).show();
+                                    }*/
+                                    if(flag){
+                                        onClick.add(e.attr("onclick").replaceAll("[^\\d]", ""));
+                                    }
+                                    else{
+                                        cse_link.add(e.attr("href"));
+                                    }
                                     result.add(data);
                                 }
                             }

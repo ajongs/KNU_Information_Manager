@@ -108,6 +108,7 @@ public class KeyWordActivity extends AppCompatActivity {
             public void onClick(View v) {
                 list.clear();
                 String keyword = inputText.getText().toString();
+                inputText.setText(null);
                 sqlDB = dbHelper.getWritableDatabase();
                 sqlDB.execSQL("INSERT INTO KeywordTBL VALUES ('"+keyword+"')");
                 Toast.makeText(getApplicationContext(), "'"+keyword+"'가 추가되었습니다.", Toast.LENGTH_SHORT).show();
